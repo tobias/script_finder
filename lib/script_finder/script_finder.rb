@@ -37,8 +37,8 @@ module ScriptFinder
           too_many_cmds_found(cmd)
         else
           command.shift
-          cmd_string = "#{cmd} #{command.join(' ')}"
-          puts cmd_string
+          cmd_string = "#{cmd} #{command.join(' ')}".strip
+          puts "--> calling '#{cmd_string}'"
           exec cmd_string
         end
       else

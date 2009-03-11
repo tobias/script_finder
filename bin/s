@@ -2,4 +2,7 @@
 
 require 'script_finder'
 
+# by default, this looks for executables in a script/ dir. To change,
+# pass the bin dir name as a second argument:
+# ScriptFinder.find_and_execute(ARGV, 'commands')
 ScriptFinder.find_and_execute(ARGV)
