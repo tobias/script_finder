@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require 'script_finder'
+
+ScriptFinder::Finder.find_and_execute(ARGV)

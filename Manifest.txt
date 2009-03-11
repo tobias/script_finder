@@ -1,0 +1,8 @@
+History.txt
+Manifest.txt
+PostInstall.txt
+README.rdoc
+Rakefile
+lib/script_finder.rb
+lib/script_finder/script_finder.rb
+bin/s
