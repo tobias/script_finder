@@ -2,4 +2,4 @@
 
 require 'script_finder'
 
-ScriptFinder::Finder.find_and_execute(ARGV)
+ScriptFinder.find_and_execute(ARGV)

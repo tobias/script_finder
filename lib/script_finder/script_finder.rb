@@ -1,30 +1,58 @@
 require 'ftools'
 
 module ScriptFinder
+  DEFAULT_BIN_DIR = 'script'
+  
+  def self.find_and_execute(command, bin_dir = nil)
+    command = command.split(' ') if command.is_a?(String)
+    finder = Finder.new(command, bin_dir).execute_command
+  end
+
   class Finder
+    def initialize(command, bin_dir = nil)
+      @command = command
+      self.bin_dir = bin_dir
+    end
+
+    def bin_dir=(dir)
+      @bin_dir = dir
+    end
+
+    def bin_dir
+      @bin_dir ||= DEFAULT_BIN_DIR
+    end
     
-    def self.find_and_execute(command, bin_dir = nil)
-      command = command.split(' ') if command.is_a?(String)
-      execute_command(command)
+    def command
+      @command
     end
-
-    def self.bin_dir=(dir)
-      @@bin_dir = dir
-    end
-
-    def self.bin_dir
-      @@bin_dir ||= 'script'
-    end
+    
+    def execute_command
+      dir = find_bin_dir
       
-    protected
+      if dir
+        cmd = find_command_in_dir(dir)
+        if cmd.nil?
+          cmd_not_found(command)
+        elsif cmd.is_a?(Array)
+          too_many_cmds_found(cmd)
+        else
+          command.shift
+          cmd_string = "#{cmd} #{command.join(' ')}"
+          puts cmd_string
+          exec cmd_string
+        end
+      else
+        bin_dir_not_found
+      end
+    end
     
-    def self.find_bin_dir(starting_dir = '.', last_dir = nil)
+    def find_bin_dir(starting_dir = '.', last_dir = nil)
       starting_dir = File.expand_path(starting_dir)
 
       Dir.chdir(starting_dir) do
         if starting_dir == last_dir
           nil
-        elsif bin_dir_exists?
+        elsif bin_dir_exists_in_pwd?
           File.join(starting_dir, bin_dir)
         else
           find_bin_dir('..', starting_dir)
@@ -32,16 +60,13 @@ module ScriptFinder
       end
     end
     
-    def self.bin_dir_exists?
-      File.exists?(bin_dir) and File.directory?(bin_dir) and File.readable?(bin_dir)
-    end
-    
-    def self.find_command_in_dir(dir, command)
+    def find_command_in_dir(dir)
+      cmd = command.first
       Dir.chdir(dir) do
-        if command and File.executable?(command)
-          possibles = [command]
+        if cmd and File.executable?(cmd)
+          possibles = [cmd]
         else
-          possibles = Dir.glob("#{command}*").select {|f| File.executable?(f)}
+          possibles = Dir.glob("#{cmd}*").select {|f| File.executable?(f)}
         end
         
         if possibles.size == 0
@@ -54,31 +79,46 @@ module ScriptFinder
       end
     end
 
-    def self.execute_command(command)
-      dir = find_bin_dir
-      
-      if dir
-        cmd = find_command_in_dir(dir, command.first)
-        if cmd.nil?
-          cmd_not_found(command)
-        elsif cmd.is_a?(Array)
-          too_many_cmds_found(command, cmd)
-        else
-          command.shift
-          cmd_string = "#{cmd} #{command.join(' ')}"
-          puts cmd_string
-          exec cmd_string
+    def unique_prefixes(possibles, prefixes = {})
+      if prefixes.values.uniq.size < possibles.size
+        possibles.each do |cmd|
+          prefixes[cmd] ||= ""
+          if prefix_is_not_unique?(cmd, prefixes[cmd], possibles)
+            prefixes[cmd] += cmd[prefixes[cmd].size,1]
+          end
         end
+        unique_prefixes(possibles, prefixes)
       else
-        bin_dir_not_found(command)
+        prefixes
       end
     end
+
+    protected
     
-    def self.cmd_not_found(command)
+    def prefix_is_not_unique?(current_cmd, current_prefix, possibles)
+      other_possibles = possibles.clone
+      other_possibles.delete(current_cmd)
+
+      (current_prefix.empty? or
+       other_possibles.inject(false) {|accum, c| accum || c[0,current_prefix.length] == current_prefix}) and
+        current_cmd.length > current_prefix.length
+    end
+    
+    def bin_dir_exists_in_pwd?
+      File.exists?(bin_dir) and
+        File.directory?(bin_dir) and
+        File.readable?(bin_dir)
+    end
+    
+    def bin_dir_not_found
+      puts "No #{bin_dir} dir found"
+    end
+    
+    def cmd_not_found
       puts "No script found matching '#{command.first}'"
     end
 
-    def self.too_many_cmds_found(command, possibles)
+    def too_many_cmds_found(possibles)
       exec_name = File.basename($0)
       puts "'#{exec_name} #{command.first}' was too ambiguous. Try:"
       unique_prefixes(possibles).each do |cmd, prefix|
@@ -86,20 +126,5 @@ module ScriptFinder
       end
     end
 
-    def self.unique_prefixes(commands, prefixes = {})
-      if prefixes.values.uniq.size < commands.size
-        commands.each do |cmd|
-          other_prefixes = prefixes.clone
-          other_prefixes[cmd] = nil
-          prefixes[cmd] ||= ""
-          if (prefixes[cmd].empty? or other_prefixes.values.include?(prefixes[cmd])) and cmd.length > prefixes[cmd].length
-            prefixes[cmd] += cmd[prefixes[cmd].size,1]
-          end
-        end
-        unique_prefixes(commands, prefixes)
-      else
-        prefixes
-      end
-    end
   end
 end
