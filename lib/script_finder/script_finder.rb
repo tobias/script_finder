@@ -32,7 +32,7 @@ module ScriptFinder
       if dir
         cmd = find_command_in_dir(dir)
         if cmd.nil?
-          cmd_not_found(command)
+          cmd_not_found
         elsif cmd.is_a?(Array)
           too_many_cmds_found(cmd)
         else
