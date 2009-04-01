@@ -1,17 +1,17 @@
-= script_finder
+h1. script_finder
 
 * http://github.com/tobias/script_finder
 
-== DESCRIPTION:
+h1. DESCRIPTION
 
-script_finder provides a script (called 's') that searches in and up from the current dir 
-for a folder (default: script/) containing an executable file uniquely identified by the a 
+script_finder provides a script (called @s@) that searches in and up from the current dir 
+for a folder (default: @script/@) containing an executable file uniquely identified by the a 
 prefix given as the first argument. It then calls that executable, passing the rest of the 
 arguments to the called executable. If the given prefix is ambiguous, the script suggests
 unique prefixes.
 
 Examples (in a rails app):
-  
+<pre>
   ~/rails_app/app/views$ s c
   --> calling '/Users/tobias/rails_app/script/console'
   Loading development environment (Rails 2.1.0)
@@ -24,30 +24,33 @@ Examples (in a rails app):
   ~/rails_app/app/views$ s ru 'some ruby'
   --> calling '/Users/tobias/rails_app/script/runner some ruby'
   ...
+</pre>
 
 The gem is not rails specific - out of the box it will work with any project that has a 
-'script/' directory. If you want to make your own version of the 's' script that looks for 
-executables in a different dir (I would save this one as 'c'):
-  
+@script/@ directory. If you want to make your own version of the @s@ script that looks for 
+executables in a different dir (I would save this one as @c@):
+
+<pre lang="ruby">
   #!/usr/bin/env ruby
 
   require 'script_finder'
   
   # looks for executables in a commands/ dir instead of script/.
   ScriptFinder.find_and_execute(ARGV, 'commands')
-  
-== FEATURES/PROBLEMS:
+</pre>
+
+h1. FEATURES/PROBLEMS
 
 * may not yet properly handle quoted arguments
 
 Email me at: tcrawley@gmail.com if you find any problems.
 
-== INSTALL:
+h1. INSTALL
 
 * gem sources -a http://gems.github.com
 * sudo gem install tobias-script_finder
 
-== LICENSE:
+h1. LICENSE
 
 Copyright (c) 2009 Tobias Crawley
 
