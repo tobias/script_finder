@@ -11,7 +11,8 @@ arguments to the called executable. If the given prefix is ambiguous, the script
 unique prefixes.
 
 Examples (in a rails app):
-<pre>
+
+<pre lang="ruby">
   ~/rails_app/app/views$ s c
   --> calling '/Users/tobias/rails_app/script/console'
   Loading development environment (Rails 2.1.0)
