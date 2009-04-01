@@ -1,5 +1,0 @@
-
-For more information on script_finder, see http://github.com/tobias/script_finder
-
-
-

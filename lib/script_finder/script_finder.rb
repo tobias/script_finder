@@ -37,7 +37,7 @@ module ScriptFinder
           too_many_cmds_found(cmd)
         else
           command.shift
-          cmd_string = "#{cmd} #{command.join(' ')}".strip
+          cmd_string = "#{cmd} #{commands_to_command_string(command)}".strip
           puts "--> calling '#{cmd_string}'"
           exec cmd_string
         end
@@ -125,6 +125,9 @@ module ScriptFinder
         puts "\t'#{exec_name} #{prefix}' for '#{File.join(bin_dir, cmd)}'"
       end
     end
-
+    
+    def commands_to_command_string(commands)
+      commands.collect {|x| "'#{x}'"}.join(' ')
+    end
   end
 end
