@@ -9,23 +9,14 @@ module ScriptFinder
   end
 
   class Finder
+    attr_accessor :bin_dir
+    attr_reader :command
+    
     def initialize(command, bin_dir = nil)
       @command = command
-      self.bin_dir = bin_dir
+      self.bin_dir = bin_dir || DEFAULT_BIN_DIR
     end
 
-    def bin_dir=(dir)
-      @bin_dir = dir
-    end
-
-    def bin_dir
-      @bin_dir ||= DEFAULT_BIN_DIR
-    end
-    
-    def command
-      @command
-    end
-    
     def execute_command
       dir = find_bin_dir
       
@@ -120,7 +111,7 @@ module ScriptFinder
 
     def too_many_cmds_found(possibles)
       exec_name = File.basename($0)
-      puts "'#{exec_name} #{command.first}' was too ambiguous. Try:"
+      puts "'#{exec_name} #{command.first}' was ambiguous. Try:"
       unique_prefixes(possibles).each do |cmd, prefix|
         puts "\t'#{exec_name} #{prefix}' for '#{File.join(bin_dir, cmd)}'"
       end
