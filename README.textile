@@ -19,7 +19,7 @@ Examples (in a rails app):
   RowsLogger plugin enables mysql
   >> exit
   ~/rails_app/app/views$ s r 'some ruby'
-  's r' was too ambiguous. Try:
+  's r' was ambiguous. Try:
     's ru' for 'script/runner'
     's re' for 'script/remote'
   ~/rails_app/app/views$ s ru 'some ruby'
