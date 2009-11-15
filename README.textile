@@ -48,8 +48,10 @@ Email me at: tcrawley@gmail.com if you find any problems.
 
 h1. INSTALL
 
-* gem sources -a http://gems.github.com
-* sudo gem install tobias-script_finder
+From "gemcutter":http://gemcutter.org/:
+
+* gem install script_finder
+
 
 h1. LICENSE
 
