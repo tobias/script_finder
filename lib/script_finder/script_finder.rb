@@ -1,5 +1,9 @@
-require 'ftools'
 require 'abbrev'
+begin
+  require 'ftools'
+rescue LoadError
+  #not available (and not needed) in ruby 1.9
+end
 
 module ScriptFinder
   DEFAULT_BIN_DIR = 'script'
