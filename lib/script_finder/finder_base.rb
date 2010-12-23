@@ -17,6 +17,6 @@ class FinderBase
   end
 
   def execute_command
-    raise "You must impliment execute_command for subclasses of FinderBase!"
+    raise NotImplementedError.new("You must impliment execute_command for subclasses of FinderBase!")
   end
 end
