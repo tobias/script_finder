@@ -1,16 +1,16 @@
 module ScriptUtilities
   #Prefix and string join utilities
-   def unique_prefixes(possibles)
-      all_prefixes = possibles.abbrev
-      all_prefixes.keys.sort.inject({ }) do |prefixes, abbrev|
-        prefixes[all_prefixes[abbrev]] ||= abbrev
-        prefixes
-      end
+ def unique_prefixes(possibles)
+    all_prefixes = possibles.abbrev
+    all_prefixes.keys.sort.inject({ }) do |prefixes, abbrev|
+      prefixes[all_prefixes[abbrev]] ||= abbrev
+      prefixes
     end
+  end
 
-    def commands_to_command_string(commands)
-      commands.collect {|x| "'#{x}'"}.join(' ')
-    end
+  def commands_to_command_string(commands)
+    commands.collect {|x| "'#{x}'"}.join(' ')
+  end
 
     #Command utilities
   def bin_dir_not_found
@@ -29,6 +29,13 @@ module ScriptUtilities
     end
   end
 
+  def too_many_options_found(matching_commands)
+    puts "'rails #{command.first}' was ambiguous. Try:"
+    matching_commands.each do |cmd, pre|
+      puts "\t'r #{pre}' for 'rails #{cmd}'"
+    end
+  end
+
   def find_command_in_dir(dir)
     cmd = command.first
 
@@ -36,6 +43,8 @@ module ScriptUtilities
       if cmd and File.executable?(cmd)
         possibles = [cmd]
       else
+        # you cheat here by using glob to find all the matching files then verifying the executable nature of them.
+        # nice
         possibles = Dir.glob("#{cmd}*").select {|f| File.executable?(f)}
       end
 
