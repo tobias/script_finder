@@ -17,7 +17,7 @@ begin
   Jeweler::GemcutterTasks.new
   
 rescue LoadError
-  puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
+  puts "Jeweler not available. Install it with: sudo gem install jeweler"
 end
 
 require 'rake/testtask'
@@ -36,7 +36,7 @@ begin
   end
 rescue LoadError
   task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
+    abort "RCov is not available. In order to run rcov, you must: sudo gem install rcov"
   end
 end
 
