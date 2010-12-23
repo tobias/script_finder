@@ -9,7 +9,9 @@ class RailsFinder < FinderBase
       elsif matching_commands.is_a?(Array) && matching_commands.size > 1
         too_many_options_found(matching_commands)
       else
-        exec matching_commands.first[1]
+        cmd_string = "rails #{matching_commands.first[1]}".strip
+        puts "--> caling '#{cmd_string}"
+        exec cmd_string
       end
       #execute command or return errors
     end
