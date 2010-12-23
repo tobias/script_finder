@@ -6,4 +6,4 @@ require 'script_finder'
 #Runs by default "rails ARGV" 
 #Verification and feeback provided as in find_and_execute
 # BlueDogArcholite - Robert R. Meyer
-RailsTaskinder.find_and_execute(ARGV)
+RailsFinder.find_and_execute(ARGV)
