@@ -13,13 +13,22 @@ class RailsFinder
   def execute_command
     #call to prefix check
     #verify one command
+
+    cmd = nil
+    if cmd.nil?
+      cmd_not_found
+      elseif cmd.is_a?(Array)
+      too_many_cmds_found(cmd)
+    else
+      exec cmd_string
+    end
     #execute command or return errors
   end
 
-
   private
   def known_commands
-    @known_commands ||= ["generate",'console','server','new','application','destroy','benchmarker','profiler','plugin','runner']
+    @known_commands ||= ["generate",'console','server','new',
+                        'application','destroy','benchmarker','profiler','plugin','runner']
   end
 end
 
