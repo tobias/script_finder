@@ -64,7 +64,7 @@ Email me at: tcrawley@gmail.com if you find any problems.
 
 ## Contributors
 
-* [Blue-Dog-Archolite](https://github.com/Blue-Dog-Archolite)
+* [Robert R. Meyer](https://github.com/Blue-Dog-Archolite)
 
 ## License
 
