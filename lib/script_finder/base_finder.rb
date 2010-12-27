@@ -1,6 +1,39 @@
-module ScriptUtilities
+require 'abbrev'
+begin
+  require 'ftools'
+rescue LoadError
+  #ignore, not needed under ruby 1.9
+end
+
+class BaseFinder
+
+  attr_accessor :bin_dir
+  attr_reader :command
+
+  DEFAULT_BIN_DIR = 'script'
+
+  def self.find_and_execute(command, bin_dir = nil)
+    command = command.split(' ') if command.is_a?(String)
+    finder = new(command, bin_dir).execute_command
+  end
+
+  def initialize(command, bin_dir = nil)
+    @command = command
+    self.bin_dir = bin_dir || DEFAULT_BIN_DIR
+  end
+
+  def execute_command
+    raise NotImplementedError.new("You must implement execute_command for subclasses of BaseFinder!")
+  end
+  
+  protected
+
+  def cmd_not_found
+    raise NotImplementedError.new("You must implement cmd_not_found for subclasses of BaseFinder!")
+  end
+
   #Prefix and string join utilities
- def unique_prefixes(possibles)
+  def unique_prefixes(possibles)
     all_prefixes = possibles.abbrev
     all_prefixes.keys.sort.inject({ }) do |prefixes, abbrev|
       prefixes[all_prefixes[abbrev]] ||= abbrev
@@ -12,27 +45,16 @@ module ScriptUtilities
     commands.collect {|x| "'#{x}'"}.join(' ')
   end
 
-    #Command utilities
+  #Command utilities
   def bin_dir_not_found
     puts "No #{bin_dir} dir found"
-  end
-
-  def cmd_not_found
-    puts "No script found matching '#{command.first}'"
   end
 
   def too_many_cmds_found(possibles)
     exec_name = File.basename($0)
     puts "'#{exec_name} #{command.first}' was ambiguous. Try:"
     unique_prefixes(possibles).each do |cmd, prefix|
-      puts "\t'#{exec_name} #{prefix}' for '#{File.join(bin_dir, cmd)}'"
-    end
-  end
-
-  def too_many_options_found(matching_commands)
-    puts "'rails #{command.first}' was ambiguous. Try:"
-    matching_commands.each do |cmd, pre|
-      puts "\t'r #{pre}' for 'rails #{cmd}'"
+      puts "\t'#{exec_name} #{prefix}' for '#{yield(cmd)}'"
     end
   end
 
@@ -43,8 +65,6 @@ module ScriptUtilities
       if cmd and File.executable?(cmd)
         possibles = [cmd]
       else
-        # you cheat here by using glob to find all the matching files then verifying the executable nature of them.
-        # nice
         possibles = Dir.glob("#{cmd}*").select {|f| File.executable?(f)}
       end
 
@@ -59,7 +79,7 @@ module ScriptUtilities
   end
 
   #Bin Utilities
-    def find_bin_dir(starting_dir = '.', last_dir = nil)
+  def find_bin_dir(starting_dir = '.', last_dir = nil)
     starting_dir = File.expand_path(starting_dir)
 
     Dir.chdir(starting_dir) do
@@ -73,10 +93,28 @@ module ScriptUtilities
     end
   end
 
-  protected
   def bin_dir_exists_in_pwd?
     File.exists?(bin_dir) and
       File.directory?(bin_dir) and
       File.readable?(bin_dir)
   end
+
+  def cmd_exec(cmd)
+    cmd.strip!
+    puts "--> calling '#{cmd}'"
+    exec cmd
+  end
+  
+  def execute_command_if_singleton(commands)
+    commands = commands.respond_to?(:to_a) ? commands.to_a : [commands] 
+    if commands.empty?
+      cmd_not_found
+    elsif commands.size > 1
+      too_many_cmds_found(commands)
+    else
+      command.shift
+      cmd_exec "#{commands.first} #{commands_to_command_string(command)}"
+    end
+  end
+
 end

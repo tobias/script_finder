@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'script_finder'
+require 'script_finder/script_finder'
 
 # by default, this looks for executables in a script/ dir. To change,
 # pass the bin dir name as a second argument:

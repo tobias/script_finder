@@ -1,33 +1,37 @@
-class RailsFinder < FinderBase
-    #going to check command arguments vs known list of valid rails tasks
-    def execute_command
-      #call to prefix check
-      #verify one command
+require 'script_finder/base_finder'
 
-      if matching_commands.nil? || matching_commands.empty?
-        cmd_not_found
-      elsif matching_commands.is_a?(Array) && matching_commands.size > 1
-        too_many_options_found(matching_commands)
-      else
-        cmd_string = "rails #{matching_commands.first[1]}".strip
-        puts "--> caling '#{cmd_string}"
-        exec cmd_string
-      end
-      #execute command or return errors
-    end
+class RailsFinder < BaseFinder
 
-    private
+  def execute_command
+    execute_command_if_singleton(matching_commands)
+  end
 
+  private
 
+  def too_many_cmds_found(commands)
+    super(commands) { |c| "rails #{c}" }
+  end
+
+  def cmd_exec(cmd)
+    super("rails #{cmd}")
+  end
+    
   def matching_commands
-    regexp = Regexp.new("#{command}.*")
-    known_commands.select{ |key, value| !regexp.match(value).nil? }
+    known_commands.select{ |cmd| cmd =~ /^#{command.first}.*/ }
+  end
+
+  def cmd_not_found
+    puts "No rails command found matching '#{command.first}'"
   end
 
   def known_commands
-    @known_commands ||= unique_prefixes(["generate",'console','server','dbconsole', 'new',
-                        'application','destroy','benchmarker','profiler','plugin','runner'])
+    # it may be worthwhile to ask rails for the commands and cache
+    # them in a .file, in case the rails command is extended to
+    # provide more commands
+    @known_commands ||= %w{ generate console server dbconsole new application
+                             destroy benchmarker profiler plugin runner }
   end
+
   #Cheat Sheet for Rails Commands
   # generate    Generate new code (short-cut alias: "g")
   # console     Start the Rails console (short-cut alias: "c")

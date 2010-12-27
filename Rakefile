@@ -10,7 +10,7 @@ begin
     gem.homepage = "http://github.com/tobias/script_finder"
     gem.authors = ["Tobias Crawley"]
     gem.files = FileList["[A-Z]*.*", "{bin,lib,test}/**/*"]
-    gem.executables = %w{s}
+    gem.executables = %w{r s}
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

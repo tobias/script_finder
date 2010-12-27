@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'script_finder'
+require 'script_finder/rails_finder'
 
 #Rewrite in order to enable finding Rails3 arugments and tasks
 #Runs by default "rails ARGV" 

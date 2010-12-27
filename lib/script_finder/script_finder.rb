@@ -1,22 +1,23 @@
-class ScriptFinder < FinderBase
+require 'script_finder/base_finder'
+
+class ScriptFinder < BaseFinder
   def execute_command
     dir = find_bin_dir
 
     if dir
-      cmd = find_command_in_dir(dir)
-      if cmd.nil?
-        cmd_not_found
-      elsif cmd.is_a?(Array)
-        too_many_cmds_found(cmd)
-      else
-        command.shift
-        cmd_string = "#{cmd} #{commands_to_command_string(command)}".strip
-
-        puts "--> calling '#{cmd_string}'"
-        exec cmd_string
-      end
+      execute_command_if_singleton(find_command_in_dir(dir))
     else
       bin_dir_not_found
     end
   end
+
+  private
+  def too_many_cmds_found(cmd)
+    super(cmd) { |c| File.join(bin_dir, c) }
+  end
+
+  def cmd_not_found
+    puts "No script found matching '#{command.first}'"
+  end
+
 end
