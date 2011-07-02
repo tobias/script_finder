@@ -14,7 +14,21 @@ class BaseFinder
 
   def self.find_and_execute(command, bin_dir = nil)
     command = command.split(' ') if command.is_a?(String)
+    unless running_command_for_current_rails_version?(command.first)
+      puts "You are attempting to run a command for a version of rails you are not currently running. Please verify rails version" 
+      exit
+    end
     finder = new(command, bin_dir).execute_command
+  end
+
+  def self.running_command_for_current_rails_version?(command)
+    if command =~ /r/i or command =~ /s/i
+      right_version = command =~ /r/i ? Regexp.new(/rails\s3\./i) : Regexp.new(/rails\s2\./i)
+      return !right_version.match(`rails -v`).nil?
+    end
+
+    #unknown command. Assuming that this is the right call and they know what they are doing
+    return true
   end
 
   def initialize(command, bin_dir = nil)
