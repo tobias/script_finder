@@ -3,7 +3,7 @@
 require 'script_finder/rails_finder'
 
 #Rewrite in order to enable finding Rails3 arugments and tasks
-#Runs by default "rails ARGV" 
+#Runs by default "rails ARGV"
 #Verification and feeback provided as in find_and_execute
 # BlueDogArcholite - Robert R. Meyer
-RailsFinder.find_and_execute(ARGV)
+RailsFinder.find_and_execute(ARGV, :prefix => 'r')

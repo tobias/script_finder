@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{script_finder}
-  s.version = "1.0.0"
+  s.version = "1.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Tobias Crawley"]
-  s.date = %q{2010-12-26}
-  s.email = %q{tcrawley@gmail.com}
+  s.authors = ["Robert R. Meyer", "Tobias Crawley"]
+  s.date = %q{2011-10-11}
+  s.email = %q{blue.dog.archolite@gmail.com}
   s.executables = ["r", "s"]
   s.extra_rdoc_files = [
     "LICENSE",
@@ -32,10 +32,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{A gem that provides tools to find and execute scripts in a project.}
-  s.test_files = [
-    "test/base_finder_test.rb",
-    "test/test_helper.rb"
-  ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION

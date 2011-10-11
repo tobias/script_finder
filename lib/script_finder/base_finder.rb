@@ -12,9 +12,11 @@ class BaseFinder
 
   DEFAULT_BIN_DIR = 'script'
 
-  def self.find_and_execute(command, bin_dir = nil)
+  def self.find_and_execute(command, opts = {})
+    bin_dir = opts[:bin_dir] ||= nil
+    r_or_s = opts[:prefix]
     command = command.split(' ') if command.is_a?(String)
-    unless running_command_for_current_rails_version?(command.first)
+    unless running_command_for_current_rails_version?(r_or_s)
       puts "You are attempting to run a command for a version of rails you are not currently running. Please verify rails version" 
       exit
     end
@@ -23,7 +25,8 @@ class BaseFinder
 
   def self.running_command_for_current_rails_version?(command)
     if command =~ /r/i or command =~ /s/i
-      right_version = command =~ /r/i ? Regexp.new(/rails\s3\./i) : Regexp.new(/rails\s2\./i)
+      right_version = command =~ /r/i ? Regexp.new(/rails\s(3\.)/i) : Regexp.new(/rails\s(2\.)/i)
+
       return !right_version.match(`rails -v`).nil?
     end
 
@@ -39,9 +42,8 @@ class BaseFinder
   def execute_command
     raise NotImplementedError.new("You must implement execute_command for subclasses of BaseFinder!")
   end
-  
-  protected
 
+  protected
   def cmd_not_found
     raise NotImplementedError.new("You must implement cmd_not_found for subclasses of BaseFinder!")
   end
@@ -130,5 +132,4 @@ class BaseFinder
       cmd_exec "#{commands.first} #{commands_to_command_string(command)}"
     end
   end
-
 end

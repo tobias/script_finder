@@ -6,9 +6,9 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "script_finder"
     gem.summary = %Q{A gem that provides tools to find and execute scripts in a project.}
-    gem.email = "tcrawley@gmail.com"
+    gem.email = "blue.dog.archolite@gmail.com"
     gem.homepage = "http://github.com/tobias/script_finder"
-    gem.authors = ["Tobias Crawley"]
+    gem.authors = ["Robert R. Meyer","Tobias Crawley"]
     gem.files = FileList["[A-Z]*.*", "{bin,lib,test}/**/*"]
     gem.executables = %w{r s}
 
