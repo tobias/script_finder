@@ -18,6 +18,7 @@ class BaseFinder
     command = command.split(' ') if command.is_a?(String)
     unless running_command_for_current_rails_version?(r_or_s)
       puts "You are attempting to run a command for a version of rails you are not currently running. Please verify rails version" 
+      puts "Current rails version is #{`rails -v`}"
       exit
     end
     finder = new(command, bin_dir).execute_command
